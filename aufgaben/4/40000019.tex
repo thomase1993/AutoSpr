@@ -38,8 +38,11 @@ V&\rightarrow
 Zeigen Sie, dass das Wort {\tt freude} zwei verschiedene
 parse trees hat.
 
+\thema{Stackautomat}
+\thema{eindeutiger Parse Tree}
+
 \begin{loesung}
-Die Sprache enth"alt die W"orter
+Die Sprache enthält die Wörter
 \[
 \varepsilon,
 \text{\it KV},
@@ -49,7 +52,7 @@ Die Sprache enth"alt die W"orter
 \text{\it KVKV},
 \text{\it KKVV},\dots
 \]
-also alle W"orter, die gleich viele Konsonanten wie Vokale enthalten.
+also alle Wörter, die gleich viele Konsonanten wie Vokale enthalten.
 Wir brauchen also nur einen Pushdown-Automaten, der feststellen kann,
 ob die gleiche Anzahl Vokale wie Konsonanten gelesen worden sind. Dazu
 verwenden wir als Stackalphabet $\Gamma = \{{\tt \$}, {\tt +}\}$,
@@ -83,7 +86,11 @@ Konsonanten gelesen wurden:
         &*++[o][F=]{E}
 }
 \]
-Die m"oglichen Parse Trees sind:
+Dabei stehen die Variablen $V$ und $K$ in den Übergängen für 
+die Terminalsymbole, in die sie gemäss der Regeln der Grammatik
+verwandelt werden können.
+
+Die möglichen Parse Trees sind:
 \[
 \xymatrix{
         &
@@ -92,13 +99,20 @@ Die m"oglichen Parse Trees sind:
         &S\ar[dl] \ar[d] \ar[drr]
                 &
                         &
-                                &S\ar[dd] \ar[ddr]
+                                &S\ar[d] \ar[dr]
 \\
-K\ar[d]
+K\ar[dd]
         &S\ar[d] \ar[dr]
                 &
-                        &V\ar[d]
-                                &
+                        &V\ar[dd]
+                                &K\ar[dd]
+					&V\ar[dd]
+\\
+	&K\ar[d]
+		&V\ar[d]
+			&
+				&
+					&
 \\
 {\tt f}
         &{\tt r}
@@ -114,17 +128,23 @@ K\ar[d]
         &
                 &S\ar[dll] \ar[d] \ar[drrr]
 \\
-K\ar[dd]
+K\ar[ddd]
         &
                 &S\ar[dl] \ar[dr]
                         &
                                 &
-                                        &V\ar[dd]
+                                        &V\ar[ddd]
 \\
         &S\ar[d] \ar[dr]
                 &
                         &S\ar[d] \ar[dr]
                                 &
+\\
+	&K\ar[d]
+		&V\ar[d]
+			&K\ar[d]
+				&V\ar[d]
+					&
 \\
 {\tt f}
         &{\tt r}
@@ -134,7 +154,7 @@ K\ar[dd]
                                         &{\tt e}
 }
 \]
-Darin haben wir zur Abk"urzung die Produktionsregeln
+Darin haben wir zur Abkürzung die Produktionsregeln
 $S\to KV$ und $S\to VK$ verwendet, welche sich durch
 zusammensetzen von $S\to KSV$ bzw.~$S\to VSK$ mit $S\to\varepsilon$
 ergeben.

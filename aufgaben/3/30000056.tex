@@ -1,0 +1,103 @@
+IPv6-Adressen bestehen aus acht Gruppen von jeweils 16 Bits.
+Eine Gruppe wird als maximal 4 Hex-Ziffern \texttt{0} -- \texttt{9},
+\texttt{a} -- \texttt{f} codiert, führende Nullen sind in jeder Gruppe erlaubt.
+Die Gruppen werden durch Doppelpunkt \texttt{:} getrennt.
+Eine typische IPv6-Adresse ist
+\[
+\texttt{2001:db8:85a3:0:0:8a2e:370:7334}
+\]
+Folgen mehr als eine Gruppe aus lauter Nullen aufeinander, im obigen
+Beispiel die Zeichenfolge \texttt{:0:0:}, können diese 
+durch einen doppelten Doppelpunkt \texttt{::} abgekürzt werden, aber
+nur einmal, da zum Beispiel in der Adresse \texttt{1::1::1} nicht klar wäre,
+wie lange die Null-Gruppen
+sind und damit an welcher Position in der Adresse die mittlere \texttt{1}
+eigentlich steht.
+Die obige Adresse kann also zu
+\[
+\texttt{2001:db8:85a3::8a2e:370:7334}
+\]
+abgekürzt werden.
+
+Finden Sie einen regulären Ausdruck, mit dem Eingebefelder für IPv6-Adressen
+plausibilisiert werden können.
+
+\thema{regulär}
+\thema{reguläre Ausdrücke}
+
+\begin{loesung}
+Die einzelnen Gruppen werden durch den regulären Ausdruck
+\[
+r_1 = \texttt{[0-9a-f]\char`\{1,4\char`\}}
+\]
+beschrieben.
+Dieser Ausdruck akzeptiert das leere Wort nicht.
+
+Eine typische IPv6-Adresse ohne die Abkürzung von Nullgruppen wird durch
+den regulären Ausdruck 
+\begin{align*}
+r_2
+&=
+r_1\texttt{(:}r_1\texttt{)\char`\{7\char`\}}
+\\
+&=
+\texttt{[0-9a-f]\char`\{1,4\char`\}}
+\texttt{(:}
+\texttt{[0-9a-f]\char`\{1,4\char`\}}
+\texttt{)\char`\{7\char`\}}
+\end{align*}
+beschrieben.
+
+Wenn nur mindestens zwei Nullgruppen abgekürzt werden sollen, dann
+besteht eine IPv6-Adresse aus zwei Teiladressen, die möglicherweise
+leer sind, getrennt von einem doppelten Doppelpunkt \texttt{::}.
+\begin{align*}
+r_3 &= r_4\texttt{::}r_4
+\\
+\text{mit}\qquad
+r_4
+&=
+\texttt{(}r_1 \texttt{(:}r_1\texttt{)\char`\{,6\char`\}}\texttt{)?}
+\\
+&=
+\texttt{(}
+\texttt{[0-9a-f]\char`\{1,4\char`\}}
+\texttt{(:}
+\texttt{[0-9a-f]\char`\{1,4\char`\}}
+\texttt{)\char`\{,6\char`\}}\texttt{)?}
+\\
+&=
+\texttt{(}
+\texttt{[0-9a-f]\char`\{1,4\char`\}}
+\texttt{(:}
+\texttt{[0-9a-f]\char`\{1,4\char`\}}
+\texttt{)\char`\{,6\char`\}}\texttt{)?}
+\end{align*}
+
+Eine beliebige IPv6-Adresse passt daher auf den regulären Ausruck
+\begin{align*}
+r
+&=
+r_2\texttt{|} r_3,
+\end{align*}
+der jedoch zu lange ist, ihn auf einer einzigen Zeile darzustellen.
+
+Dieser Ausdruck stellt nicht sicher, dass die Gesamtzahl von Gruppen
+auf beiden Seiten des doppelten Doppelpunktes nicht grösser als $6$ ist.
+Dazu müssten man zusätzliche Ausrücke ähnlich wie $r_4\texttt{::}r_4$
+bauen, jedoch $r_4$ ersetzen durch Ausdrücke, die die Anzahl der Gruppen
+limitiert.
+Dies scheint jedoch übermässig kompliziert und wird daher sinnvoller
+der Anwendungslogik überlassen.
+\end{loesung}
+
+\begin{bewertung}
+Nur Hex-Ziffern akzeptiert ({\bf Z}) 1 Punkt,
+1--4 Zeichen in einer Gruppe ({\bf 4}) 1 Punkt,
+genau 8 mit Doppelpunkt getrennte Gruppen ({\bf 8}) 1 Punkt,
+höchstens eine Nullgruppe \texttt{::} ({\bf N}) 1 Punkt,
+Alternativbildung für Adressen ohne Nullgruppen ({\bf A}) 1 Punkt,
+Sicherstellen, dass nicht mehr als 6 Gruppen links und rechts von 
+\texttt{::} stehen können ({\bf 6}) 1 Punkt.
+\end{bewertung}
+
